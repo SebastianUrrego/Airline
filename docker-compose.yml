@@ -1,0 +1,23 @@
+services:
+  # La API lee DATABASE_URL de .env (endpoint de escritura del cluster Aurora).
+  api:
+    build: ./backend
+    env_file: .env
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  # Solo para pruebas sin AWS: docker compose --profile local up
+  # (en ese caso DATABASE_URL=postgresql://airline:airline@db:5432/airline)
+  db:
+    profiles: ["local"]
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: airline
+      POSTGRES_USER: airline
+      POSTGRES_PASSWORD: airline
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
